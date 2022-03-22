@@ -18,6 +18,6 @@ EditorBuildSettings:
     path: 
     guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Library/Scenes/MainScene.unity
+    path: Assets/Library/Scenes/MoneyBuster.unity
     guid: a9818877758de10418f9d5c70ef362e3
   m_configObjects: {}
