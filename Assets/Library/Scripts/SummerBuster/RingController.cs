@@ -28,7 +28,6 @@ namespace SummerBuster
         private void OnMouseDown()
         {
             SetFirstClickSide();
-            //Debug.Log(ringColorDictionary[firstRingList[0]]);
         }
         private void OnMouseDrag()
         {
