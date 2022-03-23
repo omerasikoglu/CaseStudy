@@ -3,6 +3,8 @@ using NaughtyAttributes;
 using System.Collections.Generic;
 using System.Linq;
 
+//Solo Ring Script
+
 namespace SummerBuster
 {
     public enum Colors
@@ -11,7 +13,6 @@ namespace SummerBuster
     };
     public class EldenRing : MonoBehaviour
     {
-
         [SerializeField, BoxGroup("[Only One Bool Stands]")]
         private bool blue, green, yellow;
 

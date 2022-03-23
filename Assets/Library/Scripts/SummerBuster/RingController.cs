@@ -13,10 +13,14 @@ namespace SummerBuster
             Left, Middle, Right,
         }
 
-        [SerializeField] private List<Transform> firstRingList, secondRingList, thirdRingList;
+        [SerializeField, BoxGroup("Ring Lists")]
+        private List<Transform> firstRingList, secondRingList, thirdRingList, ghostRingList;
+
+        [SerializeField, BoxGroup("Chibi List")] private List<Transform> chibiList;
+
+        private Side firstClickedSide, currentSide;
 
         private List<Transform> firstClickedList, currentList;
-        private Side firstClickedSide, currentSide;
 
         private float maxHeight = 11.25f, heightModifier = 1.75f;
 
@@ -39,20 +43,29 @@ namespace SummerBuster
         }
         private void OnMouseUp()
         {
-            //düþme
-            if (firstClickedList.Count == 0) return;
-
-            //ilk seçtiðimiz listedeki yuzugu býrakýrýz
-            firstClickedList[firstClickedList.Count - 1].
-              DOMoveY(heightModifier * currentList.Count + 1, 1f).
-              SetEase(Ease.OutBounce, 0.2f);
+            HideInvisibleRings();
 
             //telefondan elimizi kaldýrdýðýmýzda hareket ettirmiþ miyiz
-            if (firstClickedSide == currentSide) return;
+            if (firstClickedSide == currentSide)
+            {
+                //ilk seçtiðimiz listedeki yuzugu býrakýrýz
+                firstClickedList[firstClickedList.Count - 1].
+                  DOMoveY(heightModifier * currentList.Count, 1f).
+                  SetEase(Ease.OutBounce, 0.2f);
+            }
+            else
+            {
+                firstClickedList[firstClickedList.Count - 1].
+                 DOMoveY(heightModifier * (currentList.Count + 1), 1f).
+                 SetEase(Ease.OutBounce, 0.2f);
 
-            GetCurrentList().Add(firstClickedList[firstClickedList.Count - 1]);
-            firstClickedList.RemoveAt(firstClickedList.Count - 1);
-            CheckAreYouWin();
+                //side deðiþirse listeler güncellenir
+                GetCurrentList().Add(firstClickedList[firstClickedList.Count - 1]);
+                firstClickedList.RemoveAt(firstClickedList.Count - 1);
+                CheckAreYouWin();
+            }
+
+
         }
         private void SetFirstClickSide()
         {
@@ -116,29 +129,109 @@ namespace SummerBuster
         }
         private void ShowInvisibleRings()
         {
-
+            float ringXPos = GetCurrentSide() switch
+            {
+                Side.Left => 0f,
+                Side.Middle => 6f,
+                Side.Right => 12f,
+                _ => 0f,
+            };
+            GetGhostRing().gameObject.SetActive(true);
+            GetGhostRing().position = new Vector3(ringXPos, heightModifier * (currentList.Count + 1), -5f);
         }
+        private void HideInvisibleRings()
+        {
+            GetGhostRing().gameObject.SetActive(false);
+        }
+        private Transform GetGhostRing()
+        {
+            return firstClickedList[firstClickedList.Count - 1].GetComponent<EldenRing>().GetColor() switch
+            {
+                Colors.blue => ghostRingList[0],
+                Colors.green => ghostRingList[1],
+                Colors.yellow => ghostRingList[2],
+                _ => ghostRingList[0],
+            };
+        }
+
+
+        [Button]
         private void CheckAreYouWin()
         {
-            Colors color = firstRingList[0].GetComponent<EldenRing>().GetColor();
+            bool areYouWin = true;
+
+            if (firstRingList.Count == 0) return;
+            else
+            {
+                Colors color = firstRingList[0].GetComponent<EldenRing>().GetColor();
+                for (int i = 0; i < firstRingList.Count; i++)
+                {
+                    if (firstRingList[i].GetComponent<EldenRing>().GetColor() != color)
+                    {
+                        areYouWin = false; 
+                    }
+                }
+            }
+            if (secondRingList.Count == 0) return;
+            else
+            {
+                Colors color = secondRingList[0].GetComponent<EldenRing>().GetColor();
+
+                for (int i = 0; i < secondRingList.Count; i++)
+                {
+                    if (secondRingList[i].GetComponent<EldenRing>().GetColor() != color)
+                    {
+                        areYouWin = false;
+                    }
+                }
+            }
+            if (thirdRingList.Count == 0) return;
+            else
+            {
+                Colors color = thirdRingList[0].GetComponent<EldenRing>().GetColor();
+                Debug.Log(color);
+                for (int i = 0; i < thirdRingList.Count; i++)
+                {
+                    if (thirdRingList[i].GetComponent<EldenRing>().GetColor() != color)
+                    {
+                        areYouWin = false;
+                    }
+                }
+            }
+
+            if (areYouWin)
+            {
+                JumpingRings();
+                JumpingChibis();
+                Debug.Log("win");
+                GameManager.Instance.ChangeState(GameState.Win);
+
+
+            }
+        }
+
+        private void JumpingChibis()
+        {
+            foreach (var chibi in chibiList)
+            {
+                chibi.GetComponent<Animator>().Play("");
+            }
+        }
+
+        private void JumpingRings()
+        {
             foreach (var item in firstRingList)
             {
-                if (item.GetComponent<EldenRing>().GetColor() != color) break;
+                item.DOLocalMoveY(10f, 1f).SetEase(Ease.InBounce).SetLoops(-1, LoopType.Yoyo);
             }
-            color = secondRingList[0].GetComponent<EldenRing>().GetColor();
             foreach (var item in secondRingList)
             {
-                if (item.GetComponent<EldenRing>().GetColor() != color) break;
+                item.DOLocalMoveY(10f, 1f).SetEase(Ease.InBounce).SetLoops(-1, LoopType.Yoyo);
             }
-            color = thirdRingList[0].GetComponent<EldenRing>().GetColor();
             foreach (var item in thirdRingList)
             {
-                if (item.GetComponent<EldenRing>().GetColor() != color) break;
+                item.DOLocalMoveY(10f, 1f).SetEase(Ease.InBounce).SetLoops(-1, LoopType.Yoyo);
             }
-            Debug.Log("win");
-
-            //TODO: Win UI açýlýr
-            GameManager.Instance.ChangeState(GameState.Win);
         }
     }
 }

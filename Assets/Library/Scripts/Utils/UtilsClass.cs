@@ -13,7 +13,7 @@ public static class UtilsClass
     public static Vector3 GetScreenToViewportPoint(Vector3? objectPosition = null, float posZ = 0f)
     {
         // sol-alt köşe 0.0f | sağ-üst 1.0f | kamera hareket etse de hep böyle
-        mainCamera ??= Camera.main;
+        mainCamera = Camera.main;
 
         Vector3 position = objectPosition == null ?
             mainCamera.ScreenToViewportPoint(Input.mousePosition) : mainCamera.ScreenToViewportPoint((Vector3)objectPosition);
@@ -24,7 +24,7 @@ public static class UtilsClass
     public static Vector3 GetScreenToWorldPoint(Vector3? objectPosition = null, float posZ = 0f)
     {
         // sol-alt Dünyada neyse o -299 bile olabilir kamera konumu önemsiz. Dünyadaki 0,0,0 noktası origin olur
-        mainCamera ??= Camera.main;
+        mainCamera = Camera.main;
 
         Vector3 position = objectPosition == null ?
             mainCamera.ScreenToWorldPoint(Input.mousePosition) : mainCamera.ScreenToWorldPoint((Vector3)objectPosition);
@@ -36,7 +36,7 @@ public static class UtilsClass
     public static Vector3 GetWorldToScreenPoint(Vector3? objectPosition = null, float posZ = 0f)
     {
         // aynı Vec3'ten döndürmez hiç.İlk girdiğinde kameranın sol altı 0,0 olur.70k'lara kadar çıkar ilerledikçe çok artar
-        mainCamera ??= Camera.main;
+        mainCamera = Camera.main;
 
         Vector3 position = objectPosition == null ?
             mainCamera.WorldToScreenPoint(Input.mousePosition) : mainCamera.WorldToScreenPoint((Vector3)objectPosition);
