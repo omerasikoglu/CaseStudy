@@ -16,7 +16,7 @@ namespace SummerBuster
         [SerializeField, BoxGroup("Ring Lists")]
         private List<Transform> firstRingList, secondRingList, thirdRingList, ghostRingList;
 
-        [SerializeField, BoxGroup("Chibi List")] private List<Transform> chibiList;
+        [SerializeField] private List<Transform> chibiList;
 
         private Side firstClickedSide, currentSide;
 
@@ -24,6 +24,7 @@ namespace SummerBuster
 
         private float maxHeight = 11.25f, heightModifier = 1.75f;
 
+        //UNITY FUNCTIONS
         private void OnMouseDown()
         {
             SetFirstClickSide();
@@ -67,6 +68,8 @@ namespace SummerBuster
 
 
         }
+
+        //SET
         private void SetFirstClickSide()
         {
             float firstViewportPosX = UtilsClass.GetScreenToViewportPoint().x;
@@ -90,6 +93,8 @@ namespace SummerBuster
             };
             currentList = firstClickedList;
         }
+
+        //GET
         private Side GetCurrentSide()
         {
             float posX = UtilsClass.GetScreenToViewportPoint().x;
@@ -107,6 +112,17 @@ namespace SummerBuster
             else if (posX >= 0.7f) return thirdRingList;
             else return secondRingList;
         }
+        private Transform GetGhostRing()
+        {
+            return firstClickedList[firstClickedList.Count - 1].GetComponent<Ring>().GetColor() switch
+            {
+                Colors.blue => ghostRingList[0],
+                Colors.green => ghostRingList[1],
+                Colors.yellow => ghostRingList[2],
+                _ => ghostRingList[0],
+            };
+        }
+
         private void UpdateCurrentSide()
         {
             currentSide = GetCurrentSide();
@@ -129,6 +145,10 @@ namespace SummerBuster
         }
         private void ShowInvisibleRings()
         {
+            //tuttuðumuz halkanýn rengi yerleþtirceðimiz halkanýn rengiyle ayný deðilse gösterme
+            //if (firstClickedList[firstClickedList.Count - 1].GetComponent<EldenRing>().GetColor() !=
+            //    currentList[currentList.Count - 1].GetComponent<EldenRing>().GetColor()) return;
+
             float ringXPos = GetCurrentSide() switch
             {
                 Side.Left => 0f,
@@ -143,18 +163,6 @@ namespace SummerBuster
         {
             GetGhostRing().gameObject.SetActive(false);
         }
-        private Transform GetGhostRing()
-        {
-            return firstClickedList[firstClickedList.Count - 1].GetComponent<EldenRing>().GetColor() switch
-            {
-                Colors.blue => ghostRingList[0],
-                Colors.green => ghostRingList[1],
-                Colors.yellow => ghostRingList[2],
-                _ => ghostRingList[0],
-            };
-        }
-
-
         [Button]
         private void CheckAreYouWin()
         {
@@ -163,23 +171,23 @@ namespace SummerBuster
             if (firstRingList.Count == 0) return;
             else
             {
-                Colors color = firstRingList[0].GetComponent<EldenRing>().GetColor();
+                Colors color = firstRingList[0].GetComponent<Ring>().GetColor();
                 for (int i = 0; i < firstRingList.Count; i++)
                 {
-                    if (firstRingList[i].GetComponent<EldenRing>().GetColor() != color)
+                    if (firstRingList[i].GetComponent<Ring>().GetColor() != color)
                     {
-                        areYouWin = false; 
+                        areYouWin = false;
                     }
                 }
             }
             if (secondRingList.Count == 0) return;
             else
             {
-                Colors color = secondRingList[0].GetComponent<EldenRing>().GetColor();
+                Colors color = secondRingList[0].GetComponent<Ring>().GetColor();
 
                 for (int i = 0; i < secondRingList.Count; i++)
                 {
-                    if (secondRingList[i].GetComponent<EldenRing>().GetColor() != color)
+                    if (secondRingList[i].GetComponent<Ring>().GetColor() != color)
                     {
                         areYouWin = false;
                     }
@@ -188,11 +196,11 @@ namespace SummerBuster
             if (thirdRingList.Count == 0) return;
             else
             {
-                Colors color = thirdRingList[0].GetComponent<EldenRing>().GetColor();
-                Debug.Log(color);
+                Colors color = thirdRingList[0].GetComponent<Ring>().GetColor();
+
                 for (int i = 0; i < thirdRingList.Count; i++)
                 {
-                    if (thirdRingList[i].GetComponent<EldenRing>().GetColor() != color)
+                    if (thirdRingList[i].GetComponent<Ring>().GetColor() != color)
                     {
                         areYouWin = false;
                     }
@@ -203,23 +211,27 @@ namespace SummerBuster
             {
                 JumpingRings();
                 JumpingChibis();
+
+
                 Debug.Log("win");
                 GameManager.Instance.ChangeState(GameState.Win);
 
 
             }
         }
-
         private void JumpingChibis()
         {
-            foreach (var chibi in chibiList)
+            foreach (var item in chibiList)
             {
-                chibi.GetComponent<Animator>().Play("");
+                item.DOLocalMoveY(1, 0.2f).SetLoops(-1, LoopType.Incremental);
             }
         }
-
         private void JumpingRings()
         {
+            //DOTween'ler hata veriyor 2 tanesi çakýþtýðý için o yüzden bu var
+            currentList[currentList.Count - 1].DOMoveY(heightModifier * (currentList.Count), 0f);
+
+            //jump for everyone
             foreach (var item in firstRingList)
             {
                 item.DOLocalMoveY(10f, 1f).SetEase(Ease.InBounce).SetLoops(-1, LoopType.Yoyo);

@@ -6,7 +6,7 @@ namespace SummerBuster
     public enum GameState
     {
         None = 0,
-        Start =1,
+        Start = 1,
         Win = 2,
     }
     public class GameManager : Singleton<GameManager>
@@ -38,12 +38,15 @@ namespace SummerBuster
 
         private void HandleStart()
         {
-            UIManager.Instance.CloseWinGameUI();
-        }
+            if (!PlayerPrefs.HasKey(StringData.LEVEL)) PlayerPrefs.SetInt(StringData.LEVEL, 1);
 
+            UIManager.Instance.CloseWinGameUI();
+            UIManager.Instance.UpdateLevelUI();
+        }
         private void HandleWin()
         {
             UIManager.Instance.OpenWinGameUI();
+            PlayerPrefs.SetInt(StringData.LEVEL, PlayerPrefs.GetInt(StringData.LEVEL) + 1);
         }
     }
 }

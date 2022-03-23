@@ -11,9 +11,9 @@ namespace SummerBuster
     {
         blue, green, yellow,
     };
-    public class EldenRing : MonoBehaviour
+    public class Ring : MonoBehaviour
     {
-        [SerializeField, BoxGroup("[Only One Bool Stands]")]
+        [SerializeField, BoxGroup("[Only One Bool can be Activated]")]
         private bool blue, green, yellow;
 
         private Dictionary<Colors, bool> newDic, prevDic;

@@ -9,6 +9,7 @@ namespace SummerBuster
         public void ReloadThisScene()
         {
             SceneManager.LoadScene(StringData.SUMMERBUSTER);
+            GameManager.Instance.ChangeState(GameState.Start);
         }
 
 
