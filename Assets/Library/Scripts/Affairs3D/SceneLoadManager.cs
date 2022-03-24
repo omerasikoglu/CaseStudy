@@ -1,14 +1,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace SummerBuster
+namespace Affairs3D
 {
     public class SceneLoadManager : MonoBehaviour
     {
         public void ReloadThisScene()
         {
-            SceneManager.LoadScene(StringData.SUMMERBUSTER);
-            GameManager.Instance.ChangeState(GameState.Start);
+            SceneManager.LoadScene(StringData.AFFAIRS_3D);
         }
     } 
 }

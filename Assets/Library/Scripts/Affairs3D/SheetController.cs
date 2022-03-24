@@ -35,23 +35,23 @@ namespace Affairs3D
 
         private void CheckIsSwipeTime()
         {
-            if (sheetArrowPosList[0].position.x <= 4.5f && sheetArrowPosList[0].position.x >= 2.2f)
+            if (sheetArrowPosList[0].position.x <= 4.6f && sheetArrowPosList[0].position.x >= 3.0f)
             {
                 isSwipeTime = true; currentSwipe = swipeList[0];
             }
-            else if (sheetArrowPosList[1].position.x <= 4.5f && sheetArrowPosList[1].position.x >= 2.2f)
+            else if (sheetArrowPosList[1].position.x <= 4.6f && sheetArrowPosList[1].position.x >= 3.0f)
             {
                 isSwipeTime = true; currentSwipe = swipeList[1];
             }
-            else if (sheetArrowPosList[2].position.x <= 4.5f && sheetArrowPosList[2].position.x >= 2.2f)
+            else if (sheetArrowPosList[2].position.x <= 4.6f && sheetArrowPosList[2].position.x >= 3.0f)
             {
                 isSwipeTime = true; currentSwipe = swipeList[2];
             }
-            else if (sheetArrowPosList[3].position.x <= 4.5f && sheetArrowPosList[3].position.x >= 2.2f)
+            else if (sheetArrowPosList[3].position.x <= 4.6f && sheetArrowPosList[3].position.x >= 3.0f)
             {
                 isSwipeTime = true; currentSwipe = swipeList[3];
             }
-            else if (sheetArrowPosList[4].position.x <= 4.5f && sheetArrowPosList[4].position.x >= 2.2f)
+            else if (sheetArrowPosList[4].position.x <= 4.6f && sheetArrowPosList[4].position.x >= 3.0f)
             {
                 isSwipeTime = true; currentSwipe = swipeList[4];
             }
@@ -65,33 +65,49 @@ namespace Affairs3D
 
         private void OnMouseUp()
         {
+            //Debug.Log(lastInputPos.x + " " + firstInputPos.x + " " + currentSwipe);
+
+            SwipeHandler();
+        }
+
+        private void SwipeHandler()
+        {
             //zamanýnda basmadýysa yok say
             if (!isSwipeTime) return;
 
             lastInputPos = (Vector2)Input.mousePosition;
 
+            //check horizontal
             if (lastInputPos.x > firstInputPos.x)
             {
+
                 //saða kaydý
                 if (currentSwipe == SwipeType.Right)
                 {
-                    Debug.Log(true);
+                    AnimationController.Instance.ActivatePose(StringData.POSE_UP);
+                    Debug.Log("Right");
                 }
             }
             else if (lastInputPos.x < firstInputPos.x)
             {
+
                 //sola kaydý
                 if (currentSwipe == SwipeType.Left)
                 {
-                    Debug.Log(true);
+                    AnimationController.Instance.ActivatePose(StringData.POSE_LEFT);
+                    Debug.Log("Left");
                 }
             }
-            else if (lastInputPos.y < firstInputPos.y)
+
+            //check vertical
+            if (lastInputPos.y < firstInputPos.y)
             {
+
                 //aþaðý
                 if (currentSwipe == SwipeType.Down)
                 {
-                    Debug.Log(true);
+                    AnimationController.Instance.ActivatePose(StringData.POSE_DOWN);
+                    Debug.Log("Down");
                 }
             }
             else if (lastInputPos.y > firstInputPos.y)
@@ -99,7 +115,8 @@ namespace Affairs3D
                 //yukarý
                 if (currentSwipe == SwipeType.Up)
                 {
-                    Debug.Log(true);
+                    AnimationController.Instance.ActivatePose(StringData.POSE_UP);
+                    Debug.Log("Up");
                 }
             }
         }

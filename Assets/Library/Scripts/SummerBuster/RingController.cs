@@ -144,7 +144,9 @@ namespace SummerBuster
         }
         private void ShowInvisibleRings()
         {
+            /* REMOVED - böylesi daha eðlenceli*/
             //tuttuðumuz halkanýn rengi yerleþtirceðimiz halkanýn rengiyle ayný deðilse gösterme
+
             //if (firstClickedList[firstClickedList.Count - 1].GetComponent<EldenRing>().GetColor() !=
             //    currentList[currentList.Count - 1].GetComponent<EldenRing>().GetColor()) return;
 
